@@ -1,0 +1,15 @@
+[package]
+name = "ispot"
+version = "0.1.0"
+authors = ["Quiran Storey"]
+edition = "2018"
+description = "Convert iTunes playlists to Spotify playlists."
+license = "MIT"
+
+[dependencies]
+clap = "2.33.0"
+failure = "0.1.5"
+plist = "0.4.1"
+prettytable-rs = "0.8.0"
+rspotify = "0.6.0"
+serde = { version = "1.0.2", features = ["derive"] }
