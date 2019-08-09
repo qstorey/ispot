@@ -1,5 +1,5 @@
 use crate::error::{Error, ErrorKind};
-use crate::failure;
+use failure;
 use crate::types;
 use rspotify::spotify::client::{ApiError, Spotify};
 use rspotify::spotify::model::playlist::FullPlaylist;
