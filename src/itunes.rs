@@ -57,8 +57,8 @@ impl types::DisplayTrack for Track {
         &self.name
     }
 
-    fn artist(&self) -> &str {
-        &self.artist
+    fn artist(&self) -> String {
+        self.artist.clone()
     }
 
     fn album(&self) -> Option<&String> {

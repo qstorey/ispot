@@ -1,6 +1,6 @@
 use crate::error::{Error, ErrorKind};
-use failure;
 use crate::types;
+use failure;
 use rspotify::spotify::client::{ApiError, Spotify};
 use rspotify::spotify::model::playlist::FullPlaylist;
 use rspotify::spotify::model::track::FullTrack;
@@ -135,9 +135,13 @@ impl types::DisplayTrack for FullTrack {
         &self.name
     }
 
-    fn artist(&self) -> &str {
-        // TODO: This should not be hard coded.
-        "artist"
+    fn artist(&self) -> String {
+        let mut result = String::new();
+        for artist in &self.artists {
+            result.push_str(&artist.name);
+            result.push_str("; ");
+        }
+        result
     }
 
     fn album(&self) -> Option<&String> {
