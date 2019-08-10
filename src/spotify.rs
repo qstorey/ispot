@@ -110,7 +110,6 @@ impl SpotifyWrapper {
                 self.rate_limit_call(|spotify| spotify.current_user_playlists(limit, offset))?;
             playlists.append(&mut pagninator.items.clone());
             if pagninator.next.is_some() {
-                println!("paginating");
                 offset += 1;
             } else {
                 break;
