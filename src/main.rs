@@ -49,6 +49,9 @@ fn main() {
                         ),
                 )
                 .subcommand(
+                    SubCommand::with_name("list-playlists").about("List Spotify playlists."),
+                )
+                .subcommand(
                     SubCommand::with_name("match-track")
                         .about("Match a track with Spotify.")
                         .arg(
@@ -104,6 +107,9 @@ fn main() {
                         &spotify_client_secret,
                         spotify_create_playlist_matches,
                     )
+                }
+                ("list-playlists", Some(_)) => {
+                    command::list_playlists(&spotify_client_id, &spotify_client_secret)
                 }
                 ("match-playlist", Some(spotify_match_playlist_matches)) => {
                     command::match_playlist(

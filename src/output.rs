@@ -1,5 +1,35 @@
 use crate::types::DisplayTrack;
 use prettytable::{format, Cell, Row, Table};
+use rspotify::spotify::model::playlist::{FullPlaylist, SimplifiedPlaylist};
+
+pub fn tabulate_playlist(playlist: &FullPlaylist) {
+    let mut table = Table::new();
+    table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
+
+    table.add_row(Row::new(vec![Cell::new("Name"), Cell::new(&playlist.name)]));
+    table.add_row(Row::new(vec![
+        Cell::new("Spotify URI"),
+        Cell::new(&playlist.uri),
+    ]));
+
+    table.printstd();
+}
+
+pub fn tabulate_playlists(playlists: &[SimplifiedPlaylist]) {
+    let mut table = Table::new();
+    table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
+
+    table.set_titles(Row::new(vec![Cell::new("Name"), Cell::new("Spotify URI")]));
+
+    for playlist in playlists {
+        table.add_row(Row::new(vec![
+            Cell::new(&playlist.name),
+            Cell::new(&playlist.uri),
+        ]));
+    }
+
+    table.printstd();
+}
 
 pub fn tabulate_track<T: DisplayTrack>(track: &T) {
     let mut table = Table::new();

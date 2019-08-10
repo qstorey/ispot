@@ -13,13 +13,33 @@ pub fn authenticate(spotify_client_id: &str, spotify_client_secret: &str) {
     }
 }
 
-/// Create a Spotify playlist
+/// Create a Spotify playlist.
 pub fn create_playlist(spotify_client_id: &str, spotify_client_secret: &str, matches: &ArgMatches) {
     let name = matches.value_of("name").unwrap();
     let spotify_wrapper =
         spotify::SpotifyWrapper::new(&spotify_client_id, &spotify_client_secret).unwrap();
-    let playlist = spotify_wrapper.create_playlist(&name).unwrap();
-    dbg!(&playlist);
+    let playlist = match spotify_wrapper.create_playlist(&name) {
+        Ok(p) => p,
+        Err(e) => {
+            eprintln!("{}", e);
+            process::exit(1);
+        }
+    };
+    output::tabulate_playlist(&playlist);
+}
+
+/// List Spotify playlists.
+pub fn list_playlists(spotify_client_id: &str, spotify_client_secret: &str) {
+    let spotify_wrapper =
+        spotify::SpotifyWrapper::new(&spotify_client_id, &spotify_client_secret).unwrap();
+    let playlists = match spotify_wrapper.list_playlists() {
+        Ok(p) => p,
+        Err(e) => {
+            eprintln!("{}", e);
+            process::exit(1);
+        }
+    };
+    output::tabulate_playlists(&playlists);
 }
 
 pub fn match_playlist(spotify_client_id: &str, spotify_client_secret: &str, matches: &ArgMatches) {

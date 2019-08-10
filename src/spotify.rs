@@ -2,7 +2,7 @@ use crate::error::{Error, ErrorKind};
 use crate::types;
 use failure;
 use rspotify::spotify::client::{ApiError, Spotify};
-use rspotify::spotify::model::playlist::FullPlaylist;
+use rspotify::spotify::model::playlist::{FullPlaylist, SimplifiedPlaylist};
 use rspotify::spotify::model::track::FullTrack;
 use rspotify::spotify::oauth2::SpotifyClientCredentials;
 use rspotify::spotify::oauth2::SpotifyOAuth;
@@ -20,7 +20,7 @@ pub fn authenticate(
         .client_id(spotify_client_id)
         .client_secret(spotify_client_secret)
         .redirect_uri(&SPOTIFY_CLIENT_REDIRECT_URI)
-        .scope("user-read-recently-played playlist-modify-private")
+        .scope("user-read-recently-played playlist-read-private playlist-modify-private")
         .build();
 
     match get_token(&mut oauth) {
@@ -97,6 +97,25 @@ impl SpotifyWrapper {
         }
 
         Ok(page.items[0].clone())
+    }
+
+    /// List the user's playlists.
+    pub fn list_playlists(&self) -> Result<Vec<SimplifiedPlaylist>, Error> {
+        let mut playlists: Vec<SimplifiedPlaylist> = Vec::new();
+
+        let mut offset = 0;
+        let limit = 20;
+        loop {
+            let pagninator =
+                self.rate_limit_call(|spotify| spotify.current_user_playlists(limit, offset))?;
+            playlists.append(&mut pagninator.items.clone());
+            if pagninator.next.is_some() {
+                offset += 1;
+            } else {
+                break;
+            }
+        }
+        Ok(playlists)
     }
 
     /// Return the user id from the access token
