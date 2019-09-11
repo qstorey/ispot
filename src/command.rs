@@ -2,6 +2,7 @@ use crate::error::ErrorKind;
 use crate::itunes;
 use crate::output;
 use crate::spotify;
+use crate::util;
 use clap::ArgMatches;
 use rspotify::spotify::model::track::FullTrack;
 use std::process;
@@ -43,7 +44,12 @@ pub fn list_playlists(spotify_client_id: &str, spotify_client_secret: &str) {
 }
 
 pub fn match_playlist(spotify_client_id: &str, spotify_client_secret: &str, matches: &ArgMatches) {
+    let default_playlist_name = format!("ispot - {}", util::datetime_to_string());
     let path_to_playlist = matches.value_of("playlist").unwrap();
+    let print_only: bool = matches.is_present("print-only");
+    let playlist_name = matches
+        .value_of("playlist-name")
+        .unwrap_or(&default_playlist_name);
 
     let spotify_wrapper =
         spotify::SpotifyWrapper::new(&spotify_client_id, &spotify_client_secret).unwrap();
@@ -55,8 +61,7 @@ pub fn match_playlist(spotify_client_id: &str, spotify_client_secret: &str, matc
             process::exit(1);
         }
     };
-    let mut match_tracks: Vec<FullTrack> = Vec::new();
-    let mut mismatched_tracks: i32 = 0;
+    let mut matched_tracks: Vec<FullTrack> = Vec::new();
 
     for track in playlist.tracks.values() {
         match spotify_wrapper.exact_track_match(
@@ -64,16 +69,38 @@ pub fn match_playlist(spotify_client_id: &str, spotify_client_secret: &str, matc
             Some(&track.artist),
             track.album.as_ref().map(|x| &**x),
         ) {
-            Ok(spotify_track) => match_tracks.push(spotify_track.clone()),
+            Ok(spotify_track) => matched_tracks.push(spotify_track.clone()),
             Err(e) => match e.kind {
-                ErrorKind::MultipleResults(_) | ErrorKind::NoResults => mismatched_tracks += 1,
+                ErrorKind::MultipleResults(_) | ErrorKind::NoResults => (),
                 _ => panic!("unhandled exception {}", e),
             },
         }
     }
 
-    output::tabulate_tracks(match_tracks);
-    println!("mismatched tracks: {}", mismatched_tracks);
+    if matched_tracks.len() == 0 {
+        eprintln!("No track matches");
+        process::exit(1);
+    }
+
+    if !print_only {
+        let spotify_playlist = match spotify_wrapper.create_playlist(&playlist_name) {
+            Ok(p) => p,
+            Err(e) => {
+                eprintln!("{}", e);
+                process::exit(1);
+            }
+        };
+
+        for track in &matched_tracks {
+            //TODO: Don't unwrap here
+            spotify_wrapper
+                .add_track_to_playlist(&spotify_playlist.id, &track.uri)
+                .unwrap();
+        }
+    }
+
+    output::tabulate_tracks(&matched_tracks);
+    println!("matched tracks: {}", matched_tracks.len());
     println!("total tracks: {}", playlist.tracks.len());
 }
 
@@ -105,5 +132,6 @@ pub fn show_playlist(matches: &ArgMatches) {
         }
     };
 
-    output::tabulate_tracks(playlist.tracks.values().cloned().collect());
+    let tracks: Vec<_> = playlist.tracks.values().cloned().collect();
+    output::tabulate_tracks(&tracks);
 }

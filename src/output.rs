@@ -52,7 +52,7 @@ pub fn tabulate_track<T: DisplayTrack>(track: &T) {
     table.printstd();
 }
 
-pub fn tabulate_tracks<T: DisplayTrack>(tracks: Vec<T>) {
+pub fn tabulate_tracks<T: DisplayTrack>(tracks: &[T]) {
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
 
@@ -63,7 +63,7 @@ pub fn tabulate_tracks<T: DisplayTrack>(tracks: Vec<T>) {
         Cell::new("Spotify URI"),
     ]));
 
-    for track in &tracks {
+    for track in tracks {
         table.add_row(Row::new(vec![
             Cell::new(&track.name()),
             Cell::new(&track.artist()),

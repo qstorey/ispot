@@ -4,3 +4,4 @@ mod itunes;
 mod output;
 mod spotify;
 mod types;
+mod util;

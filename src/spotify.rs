@@ -52,6 +52,16 @@ impl SpotifyWrapper {
         })
     }
 
+    /// Add a track to an existing playlist.
+    /// https://developer.spotify.com/documentation/web-api/reference/playlists/add-tracks-to-playlist/
+    pub fn add_track_to_playlist(&self, playlist_id: &str, track_uri: &str) -> Result<(), Error> {
+        let user_id: String = self.user_id()?;
+        self.rate_limit_call(|spotify| {
+            spotify.user_playlist_add_tracks(&user_id, playlist_id, &[track_uri.to_string()], None)
+        })?;
+        Ok(())
+    }
+
     /// Generate a search query string according to the Spotify
     /// [docs](https://developer.spotify.com/documentation/web-api/reference/search/search/#writing-a-query---guidelines)
     fn generate_search_query(name: &str, artist: Option<&str>, album: Option<&str>) -> String {

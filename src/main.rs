@@ -79,9 +79,20 @@ fn main() {
                         .arg(
                             Arg::with_name("playlist")
                                 .help("Path to iTunes playlist file")
-                                .index(1)
                                 .required(true),
-                        ),
+                        )
+                        .arg(Arg::with_name("print-only")
+                             .help("Only print the matched playlist, don't create the Spotify playlist")
+                             .long("print-only")
+                        )
+                        .arg(Arg::with_name("playlist-name")
+                             .help("Creates a Spotify playlist with the specified name. If this is not provided a playlist name is automatically generated")
+                             .long("playlist-name")
+                             .takes_value(true)
+                             .conflicts_with("print-only")
+                        )
+
+
                 ),
         )
         .get_matches();
