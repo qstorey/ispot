@@ -4,17 +4,25 @@ Convert iTunes playlists to Spotify playlists.
 
 > WARNING: This project is a work in progress.
 
-## Run
+## Installation
+
+Register your Spotify application in the developer [dashboard](https://developer.spotify.com/documentation/general/guides/app-settings/).
 
 ```bash
-# Clone the repo
-git clone https://github.com/qstorey/ispot
+cargo install ispot
+```
 
-# Run
-cd ispot
-cargo run --
-# or
-cargo run -- --help
+## Usage
+
+```
+# Authenticate with the Spotify API
+ispot auth
+
+# Match iTunes playlist and create Spotify playlist
+ispot spotify match-playlist /path/to/itunes/playlist
+
+# More help
+ispot --help
 ```
 
 ## Development
