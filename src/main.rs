@@ -1,5 +1,8 @@
 use clap::{App, AppSettings, Arg, SubCommand};
 use ispot::command;
+use ispot::logging;
+#[macro_use]
+extern crate log;
 
 fn main() {
     let matches = App::new("iTunes to Spotify")
@@ -96,6 +99,11 @@ fn main() {
                 ),
         )
         .get_matches();
+
+    // TODO: Use a flag to set debug mode
+    logging::configure(true);
+
+    debug!("Starting up");
 
     match matches.subcommand() {
         ("itunes", Some(itunes_matches)) => match itunes_matches.subcommand() {
