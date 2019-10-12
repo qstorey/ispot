@@ -9,6 +9,11 @@ fn main() {
         .version("0.1.0")
         .about("Convert an iTunes playlist to a Spotify playlist")
         .setting(AppSettings::SubcommandRequiredElseHelp)
+        .arg(Arg::with_name("debug")
+             .short("d")
+             .long("debug")
+             .help("Enable debug logging")
+        )
         .subcommand(
             SubCommand::with_name("itunes")
                 .about("Manage iTunes playlists")
@@ -100,8 +105,11 @@ fn main() {
         )
         .get_matches();
 
-    // TODO: Use a flag to set debug mode
-    logging::configure(true);
+    if matches.is_present("debug") {
+        logging::configure(true);
+    } else {
+        logging::configure(false);
+    }
 
     debug!("Starting up");
 

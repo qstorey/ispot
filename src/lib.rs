@@ -6,3 +6,5 @@ mod output;
 mod spotify;
 mod types;
 mod util;
+#[macro_use]
+extern crate log;
