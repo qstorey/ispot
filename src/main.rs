@@ -9,10 +9,10 @@ fn main() {
         .version("0.1.0")
         .about("Convert an iTunes playlist to a Spotify playlist")
         .setting(AppSettings::SubcommandRequiredElseHelp)
-        .arg(Arg::with_name("debug")
-             .short("d")
-             .long("debug")
-             .help("Enable debug logging")
+        .arg(Arg::with_name("verbosity")
+             .short("v")
+             .multiple(true)
+             .help("verbosity level")
         )
         .subcommand(
             SubCommand::with_name("itunes")
@@ -105,11 +105,7 @@ fn main() {
         )
         .get_matches();
 
-    if matches.is_present("debug") {
-        logging::configure(true);
-    } else {
-        logging::configure(false);
-    }
+    logging::configure(matches.occurrences_of("verbosity"));
 
     debug!("Starting up");
 
