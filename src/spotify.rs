@@ -146,7 +146,7 @@ impl SpotifyWrapper {
                 ApiError::Unauthorized => Err(Error::new(ErrorKind::Unauthorized)),
                 ApiError::RateLimited(d) => {
                     let duration = d.unwrap_or(10);
-                    println!("spotify rate limit hit. sleeping for {} seconds", duration);
+                    warn!("spotify rate limit hit. sleeping for {} seconds", duration);
                     std::thread::sleep(std::time::Duration::from_secs(duration as u64));
                     self.rate_limit_call(func)
                 }

@@ -1,11 +1,19 @@
 use clap::{App, AppSettings, Arg, SubCommand};
 use ispot::command;
+use ispot::logging;
+#[macro_use]
+extern crate log;
 
 fn main() {
     let matches = App::new("iTunes to Spotify")
         .version("0.1.0")
         .about("Convert an iTunes playlist to a Spotify playlist")
         .setting(AppSettings::SubcommandRequiredElseHelp)
+        .arg(Arg::with_name("verbosity")
+             .short("v")
+             .multiple(true)
+             .help("verbosity level")
+        )
         .subcommand(
             SubCommand::with_name("itunes")
                 .about("Manage iTunes playlists")
@@ -96,6 +104,10 @@ fn main() {
                 ),
         )
         .get_matches();
+
+    logging::configure(matches.occurrences_of("verbosity"));
+
+    debug!("Starting up");
 
     match matches.subcommand() {
         ("itunes", Some(itunes_matches)) => match itunes_matches.subcommand() {

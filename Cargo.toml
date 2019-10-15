@@ -1,17 +1,20 @@
 [package]
 name = "ispot"
-version = "0.2.1"
+version = "0.3.0"
 authors = ["Quiran Storey"]
 edition = "2018"
 description = "Convert iTunes playlists to Spotify playlists."
 license = "MIT"
 repository = "https://github.com/qstorey/ispot"
 readme = "README.md"
+keywords = ["spotify", "itunes", "cli"]
 
 [dependencies]
 clap = "2.33.0"
 chrono = "0.4.9"
+env_logger = "0.7.0"
 failure = "0.1.5"
+log = "0.4.8"
 plist = "0.4.1"
 prettytable-rs = "0.8.0"
 rspotify = "0.6.0"
