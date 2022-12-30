@@ -16,6 +16,6 @@ env_logger = "0.7.0"
 failure = "0.1.5"
 log = "0.4.8"
 plist = "0.4.1"
-prettytable-rs = "0.8.0"
+prettytable-rs = "0.10.0"
 rspotify = "0.6.0"
 serde = { version = "1.0.2", features = ["derive"] }
